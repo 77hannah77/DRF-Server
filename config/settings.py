@@ -27,11 +27,27 @@ SECRET_KEY = os.environ['SECRET_KEY']
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+# ALLOWED_HOSTS = [
+#     'http://127.0.0.1:8000',
+#     '127.0.0.1',
+#     'port-0-drf-server-1mrfs72llwun15ls.sel5.cloudtype.app',
+# ]
 
+ALLOWED_HOSTS = ['*']
 
 # Application definition
-
+CORS_ALLOW_CREDENTIALS=True
+CORS_ALLOWED_ORIGINALS=[
+    "http://127.0.0.1:8000",
+    'https://port-0-drf-server-1mrfs72llwun15ls.sel5.cloudtype.app',
+    
+]
+CSRF_TRUSTED_ORIGINALS=[
+    "http://localhost:3000",
+    "http://127.0.0.1:8000",
+    'https://port-0-drf-server-1mrfs72llwun15ls.sel5.cloudtype.app',
+    
+]
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -50,12 +66,15 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
-    'dj_rest_auth.registration'
+    'dj_rest_auth.registration',
+    'corsheaders',
 
     
 ]
 
 MIDDLEWARE = [
+    
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -115,7 +134,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'config.wsgi.application'
+# WSGI_APPLICATION = 'config.wsgi.application'
 
 
 # Database
@@ -163,7 +182,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATIC_ROOT=os.path.join(BASE_DIR,"static")
+
+MEDIA_URL='/media/'
+MEDIA_ROOT=os.path.join(BASE_DIR,'media')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
