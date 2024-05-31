@@ -10,17 +10,19 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
+from datetime import timedelta
 from pathlib import Path
-
+from dotenv import load_dotenv
+import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
-
+load_dotenv()
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-4#+^9022l45veq%45au@_-0w3e^=#4(829)p^1_ef+0v7^@a3-'
+SECRET_KEY = os.environ['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -40,6 +42,17 @@ INSTALLED_APPS = [
     
     'rest_framework',
     'blog',
+    'accounts',
+    'rest_framework_simplejwt',
+    'rest_framework.authtoken',
+    'dj_rest_auth',
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'dj_rest_auth.registration'
+
+    
 ]
 
 MIDDLEWARE = [
@@ -50,10 +63,42 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
+
 ]
+
+AUTHENTICATION_BACKENDS = (
+'allauth.account.auth_backends.AuthenticationBackend',
+)
+REST_FRAMEWORK = {
+'DEFAULT_AUTHENTICATION_CLASSES': (
+'dj_rest_auth.jwt_auth.JWTCookieAuthentication',
+'rest_framework_simplejwt.authentication.JWTAuthentication',
+)
+}
+SIMPLE_JWT = {
+'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),
+'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+}
+REST_AUTH={
+    'USE_JWT':True,
+    'JWT_AUTH_HTTPONLY':False,
+    'JWT_AUTH_COOKIE':'access',
+    'JWT_AUTH_REFRESH_COOKIE':'refresh_token',
+}
+SITE_ID=1
+ACCOUNT_USER_MODEL_USERNAME_FIELD=None
+ACCOUNT_USERNAME_REQUIRED=False
+ACCOUNT_UNIQUE_EMAIL=True
+ACCOUNT_EMAIL_REQUIRED=True
+ACCOUNT_AUTHENTICATION_METHOD='email'
+ACCOUNT_EMAIL_VERIFICATION='none'
+
+
 
 ROOT_URLCONF = 'config.urls'
 
+AUTH_USER_MODEL='accounts.User'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
